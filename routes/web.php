@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Collection;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,14 +16,25 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+    $numbers = Collection::times(200)
+        ->transform(function ($number) {
+            switch ($number) {
+                case $number % 4 == 0 && $number % 7 == 0:
+                    return 'XXXYYY';
+                    break;
+                case $number % 4 == 0:
+                    return 'XXX';
+                    break;
+                case $number % 7 == 0:
+                    return 'YYY';
+                    break;
+                default:
+                    return $number;
+                    break;
+            }
+        });
+
+    return Inertia::render('Numbers', [
+        'numbers' => $numbers
     ]);
 });
-
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
